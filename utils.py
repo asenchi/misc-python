@@ -62,3 +62,29 @@ def sendmail(server, to_address, from_address, subject, message):
     smtpserver.sendmail(from_address, to_address, message)
     smtpserver.quit()
 
+
+# subnetmask from CIDR
+from socket import inet_ntoa
+from struct import pack
+def calc_netmask(mask):
+	"""Example:
+	>>> calc_netmask(24)
+	'255.255.255.0'
+	"""
+    bits = 0xffffffff ^ (1 << 32 - mask) - 1
+    return inet_ntoa(pack('>I', bits))
+
+# Another version:
+from socket import inet_ntoa
+from struct import pack
+def calc_netmask(mask):
+	"""Convert CIDR to netmask
+
+	>>> calc_netmask(24)
+	'255.255.255.0'
+	"""
+
+	bits = 0
+	for i in xrange(32-mask, 32):
+		bits |= (1 << i)
+	return inet_ntoa(pack('>I', bits))
