@@ -175,3 +175,32 @@ Check only 2 of every 6 integers.
 	     else:
 	         raise Exception("Shouldn't have run out of primes!") 
 	
+
+"""
+Function to assert that the running function is in the proper thread.
+From: http://www.developerhell.com/out/Python_asserting_code_runs_in_specific_thread
+"""
+def assertThread(*threads):
+    """Decorator that asserts the wrapped function is only
+       run in a given thread
+    """
+    import threading
+    # If no thread list was supplied, assume the wrapped
+    # function should be run in the current thread.
+    if not threads:
+        threads = (threading.currentThread(), )
+
+    def decorator(func):
+        def wrapper(*args, **kw):
+            currentThread = threading.currentThread()
+            name = currentThread.getName()
+            assert currentThread in threads or name in threads, \
+                "%s erroniously called in %s thread context" %
+                    (func.__name__, name)
+            return func(*args, **kw)
+
+        if __debug__:
+            return wrapper
+        else:
+            return func
+    return decorator
