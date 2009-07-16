@@ -204,3 +204,25 @@ def assertThread(*threads):
         else:
             return func
     return decorator
+
+
+def crushdicts(dict1, dict2):
+"""Concatenates values of keys that do not match into lists.
+
+    >>> dict1 = {'test1': 'value1'}
+    >>> dict2 = {'test1': 'value2'}
+    >>> crushed = crushdicts(dict1, dict2)
+    >>> print crushed
+    {'test1': ['value1', 'value2']}
+
+"""
+    d1, d2 = dict(dict1), dict(dict2)
+    for k in d1.keys():
+        try:
+            if cmp(d1[k], d2[k]):
+                lst = []
+                lst.extend([d1[k], d2[k]])
+                d1[k] = lst
+        except KeyError:
+            pass
+    return d1
